@@ -1,6 +1,5 @@
 <script lang="ts">
 	import "./layout.css"
-	import favicon from "$lib/assets/favicon.svg"
 	import { signOut } from "@auth/sveltekit/client"
 	import { page } from "$app/stores"
 
@@ -8,14 +7,17 @@
 	const session = $derived($page.data.session)
 </script>
 
-<svelte:head><link rel="icon" href={favicon} /></svelte:head>
+<svelte:head>
+	<title>Bucketboy</title>
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪣</text></svg>" />
+</svelte:head>
 
 {#if session?.user}
-	<header class="flex items-center justify-between border-b px-6 py-3 text-sm">
+	<header class="flex items-center justify-between border-b border-white/20 px-6 py-3 text-sm">
 		<a href="/" class="font-semibold">Bucketboy</a>
-		<div class="flex items-center gap-4 text-gray-500">
+		<div class="flex items-center gap-4 text-white/50">
 			<span>{session.user.email ?? session.user.name}</span>
-			<button onclick={() => signOut({ callbackUrl: "/logout" })} class="hover:text-black">
+			<button onclick={() => signOut({ callbackUrl: "/logout" })} class="hover:text-white">
 				Sign out
 			</button>
 		</div>
