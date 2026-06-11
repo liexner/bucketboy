@@ -10,7 +10,7 @@
 		<p class="text-white/50">No buckets found.</p>
 	{:else}
 		<ul class="divide-y divide-white/20 rounded-md border border-white/20">
-			{#each data.buckets as bucket}
+			{#each data.buckets as bucket (bucket.Name)}
 				<li>
 					<a
 						href="/{bucket.Name}"
