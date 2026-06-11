@@ -1,8 +1,11 @@
 import { ListObjectsV2Command } from "@aws-sdk/client-s3"
 import { s3 } from "$lib/server/s3"
+import { canAccessBucket } from "$lib/server/access"
 import type { PageServerLoad } from "./$types"
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params, locals }) => {
+	const session = await locals.auth()
+	canAccessBucket(params.bucket, session?.user.roles)
 	const prefix = params.prefix ? `${params.prefix}/` : ""
 
 	const result = await s3.send(
