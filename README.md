@@ -1,42 +1,59 @@
-# sv
+# Bucketboy
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A lightweight S3 bucket browser with OIDC authentication and role-based access control. Browse files and folders across S3-compatible storage, with support for restricting which buckets regular users can see.
 
-## Creating a project
+## Features
 
-If you're seeing this, you've probably already done this step. Congrats!
+- Browse S3-compatible buckets and folders
+- OIDC/SSO login (Keycloak and others)
+- Role-based access: admins see all buckets, users see only allowed buckets
+- File download support
+- Docker-ready
 
-```sh
-# create a new project
-npx sv create my-app
+## Docker
+
+```bash
+docker run -p 3000:3000 \
+  -e AUTH_SECRET=your-random-secret \
+  -e OIDC_ENABLE=true \
+  -e OIDC_ISSUER=https://your-keycloak/realms/your-realm \
+  -e OIDC_CLIENT_ID=your-client-id \
+  -e OIDC_CLIENT_SECRET=your-client-secret \
+  -e S3_ENDPOINT=https://your-s3-endpoint \
+  -e S3_REGION=us-east-1 \
+  -e S3_ACCESS_KEY=your-access-key \
+  -e S3_SECRET_KEY=your-secret-key \
+  -e USER_BUCKETS=photos,documents \
+  yourusername/bucketboy
 ```
 
-To recreate this project with the same configuration:
+## Environment Variables
 
-```sh
-# recreate this project
-npx sv@0.16.1 create --template minimal --types ts --add tailwindcss="plugins:none" prettier eslint --install npm ./
-```
+| Variable | Required | Description |
+|---|---|---|
+| `AUTH_SECRET` | Yes | Random secret for session encryption |
+| `OIDC_ENABLE` | No | Set to `true` to enable OIDC login |
+| `OIDC_ISSUER` | Yes (if OIDC) | OIDC issuer URL |
+| `OIDC_CLIENT_ID` | Yes (if OIDC) | OIDC client ID |
+| `OIDC_CLIENT_SECRET` | Yes (if OIDC) | OIDC client secret |
+| `S3_ENDPOINT` | No | S3-compatible endpoint (omit for AWS) |
+| `S3_REGION` | No | S3 region (default: `us-east-1`) |
+| `S3_ACCESS_KEY` | Yes | S3 access key |
+| `S3_SECRET_KEY` | Yes | S3 secret key |
+| `USER_BUCKETS` | No | Comma-separated list of buckets regular users can see. If unset, all users see all buckets. |
 
-## Developing
+## Keycloak Setup
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+1. Create a client role called `admin` on your client
+2. Add a **User Client Role** mapper to your client's dedicated scope:
+   - Token Claim Name: `roles`
+   - Multivalued: ON
+   - Add to ID token: ON
+3. Assign the `admin` role to admin users
 
-```sh
+## Development
+
+```bash
+npm install
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
-
-## Building
-
-To create a production version of your app:
-
-```sh
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
