@@ -15,6 +15,9 @@
 {#if session?.user}
 	<header class="flex items-center justify-between border-b border-white/20 px-6 py-3 text-sm">
 		<a href="/" class="font-semibold">Bucketboy</a>
+			{#if $page.data.version}
+				<span class="text-xs text-white/30">v{$page.data.version}</span>
+			{/if}
 		<div class="flex items-center gap-4 text-white/50">
 			{#if session.user.roles?.includes("admin")}
 				<span class="rounded bg-white/10 px-2 py-0.5 text-xs text-white">admin</span>
