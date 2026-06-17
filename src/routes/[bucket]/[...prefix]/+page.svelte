@@ -1,4 +1,5 @@
 <script lang="ts">
+	import BucketActions from "$lib/components/BucketActions.svelte"
 	import type { PageData } from "./$types"
 
 	let { data }: { data: PageData } = $props()
@@ -49,6 +50,8 @@
 			{/each}
 		{/if}
 	</nav>
+
+	<BucketActions bucket={data.bucket} prefix={data.prefix} canWrite={data.canWrite} />
 
 	{#if data.folders.length === 0 && data.files.length === 0}
 		<p class="text-white/50">Empty.</p>

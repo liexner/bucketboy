@@ -11,3 +11,8 @@ export function getAllowedBuckets(roles: string[] | undefined) {
 	if (isAdmin || !env.USER_BUCKETS) return null;
 	return new Set(env.USER_BUCKETS.split(',').map((b) => b.trim()));
 }
+
+export function canWrite(roles: string[] | undefined): boolean {
+	const oidcEnabled = env.OIDC_ENABLE === 'true';
+	return !oidcEnabled || (roles ?? []).includes('admin');
+}
