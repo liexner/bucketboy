@@ -1,5 +1,6 @@
 <script lang="ts">
 	import BucketActions from "$lib/components/BucketActions.svelte"
+	import DeleteButton from "$lib/components/DeleteButton.svelte"
 	import type { PageData } from "./$types"
 
 	let { data }: { data: PageData } = $props()
@@ -58,14 +59,14 @@
 	{:else}
 		<ul class="divide-y divide-white/20 rounded-md border border-white/20">
 			{#each data.folders as folder (folder)}
-				<li>
-					<a
-						href={folderHref(folder)}
-						class="flex items-center gap-3 px-4 py-3 hover:bg-white/5"
-					>
+				<li class="flex items-center gap-3 px-4 py-3">
+					<a href={folderHref(folder)} class="flex flex-1 items-center gap-3 hover:underline">
 						<span>📁</span>
 						<span>{folderName(folder)}</span>
 					</a>
+					{#if data.canWrite}
+						<DeleteButton action="?/deleteFolder" field="prefix" value={folder} />
+					{/if}
 				</li>
 			{/each}
 			{#each data.files as file (file.Key)}
@@ -75,11 +76,14 @@
 					<span class="text-sm text-white/40">{formatSize(file.Size)}</span>
 					<a
 						href="/download?bucket={data.bucket}&key={encodeURIComponent(file.Key!)}"
-						class="ml-4 text-sm text-white/60 hover:text-white"
+						class="text-sm text-white/60 hover:text-white"
 						data-sveltekit-preload-data="off"
 					>
 						Download
 					</a>
+					{#if data.canWrite}
+						<DeleteButton action="?/deleteFile" field="key" value={file.Key!} />
+					{/if}
 				</li>
 			{/each}
 		</ul>
